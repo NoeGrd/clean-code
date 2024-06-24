@@ -16,7 +16,7 @@ public class CompteBancaire {
     private double decouvert;
 
     /**
-     * tauxRemuneration : taux de rémunération dans le cas d'un livret A
+     * tauxRemuneration : taux de rémunération dans le cas d'un livret A (abondement annuel)
      */
     private double tauxRemuneration;
 
@@ -24,18 +24,8 @@ public class CompteBancaire {
      * Le type vaut soit CC=Compte courant, ou soit LA=Livret A
      */
     private String type;
-
-    /**
-     * @param solde
-     * @param decouvert
-     * @param type
-     */
-    public CompteBancaire(String type, double solde, double decouvert) {
-        super();
-        this.type = type;
-        this.solde = solde;
-        this.decouvert = decouvert;
-    }
+    public static final String TYPE_CC = "CC";
+    public static final String TYPE_LA = "LA";
 
 
     /**
@@ -69,11 +59,11 @@ public class CompteBancaire {
      * @param montant
      */
     public void debiterMontant(double montant) {
-        if (type.equals("CC")) {
+        if (type.equals(TYPE_CC)) {
             if (this.solde - montant > decouvert) {
                 this.solde = solde - montant;
             }
-        } else if (type.equals("LA")) {
+        } else if (type.equals(TYPE_LA)) {
             if (this.solde - montant > 0) {
                 this.solde = solde - montant;
             }
@@ -81,7 +71,7 @@ public class CompteBancaire {
     }
 
     public void appliquerRemuAnnuelle() {
-        if (type.equals("LA")) {
+        if (type.equals(TYPE_LA)) {
             this.solde = solde + solde * tauxRemuneration / 100;
         }
     }
@@ -155,6 +145,10 @@ public class CompteBancaire {
      * @param type the type to set
      */
     public void setType(String type) {
-        this.type = type;
+        if (type.equals(TYPE_CC) || type.equals(TYPE_LA)) {
+            this.type = type;
+        } else {
+            throw new IllegalArgumentException("Type de compte non valide");
+        }
     }
 }
